@@ -25,10 +25,11 @@ class ItemManufacturer(models.Model):
 
 
 class Item(models.Model):
-    category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория")
+    category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория",
+                                 on_delete=models.CASCADE)
     manufacturer = models.ForeignKey(ItemManufacturer, blank=True, null=True, default=None,
-                                     verbose_name="Производитель")
-    series = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Серия")
+                                     verbose_name="Производитель", on_delete=models.CASCADE)
+    series = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Серия",)
     name = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Название")
     vendor_code = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Артикул")
     description = models.TextField(blank=True, null=True, default=None, verbose_name="Описание")
@@ -71,7 +72,7 @@ class Item(models.Model):
         verbose_name_plural = "Изделия"
 
 class ItemImage(models.Model):
-    item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Изделие")
+    item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Изделие", on_delete=models.CASCADE)
     image = models.ImageField (upload_to='items_images/', verbose_name="Изображение")
     is_main = models.BooleanField(default=False, verbose_name="Основное?")
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
