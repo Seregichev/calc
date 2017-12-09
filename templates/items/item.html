@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3" style="padding-top:40px;">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle button-category" type="button" id="dropdownMenu1" data-toggle="dropdown" data-category-id="" aria-haspopup="true" aria-expanded="true">
+                    Категория
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    {% for category in categories %}
+                        <li class="dropdown-li category-dropdown-li" data-name="{{ category.name }}"
+                        data-id="{{ category.id }}"><a href="#">{{ category.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+            </div>
+            <div class="col-lg-6 col-lg-offset-3" style="padding-top:40px;">
+                <div class="dropdown dropdown-power">
+                  <button class="btn btn-default dropdown-toggle button-power" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Мощность
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-power" aria-labelledby="dropdownMenu2">
+                    {% for power_item in powers_items %}
+                        <li class="dropdown-li power-dropdown-li" data-power="{{ power_item.power }}">
+                            <a href="#">{{ power_item.power }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+            </div>
+        <div class="col-lg-6 col-lg-offset-3" style="padding:40px 0 40px 0;">
+            <div class="items-list" action="{% url 'filter_category_items' %}">{% csrf_token %}
+                <div>
+                    {% for item in items %}
+                        <p>{{ item.name }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{#            <div class="col-lg-6">#}
+{#                {% for image_item in product.productimage_set.all %}#}
+{#                    <img src="{{ image_item.image.url }}" class="img-responsive">#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#            <div class="col-lg-6">#}
+{#                <h1 class="text-center">#}
+{#                    {{ product.name  }}#}
+{#                </h1>#}
+{#                <div class=" ">#}
+{#                    <p>#}
+{#                        Цена: {{ product.price }}#}
+{#                    </p>#}
+{#                </div>#}
+{#                <div>#}
+{#                    <!-- Nav tabs -->#}
+{#                    <ul class="nav nav-tabs" role="tablist">#}
+{#                        <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Описание</a></li>#}
+{#                        <li role="presentation"><a href="#delivery" aria-controls="delivery" role="tab" data-toggle="tab">Доставка</a></li>#}
+{#                        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>#}
+{#                        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>#}
+{#                    </ul>#}
+{##}
+{#                  <!-- Tab panes -->#}
+{#                    <div class="tab-content product-description-tabs">#}
+{#                        <div role="tabpanel" class="tab-pane active" id="description">#}
+{#                            {{ product.description }}#}
+{#                        </div>#}
+{#                        <div role="tabpanel" class="tab-pane" id="delivery">#}
+{#                            <h3>Как мы делаем доставку</h3>#}
+{#                        </div>#}
+{#                        <div role="tabpanel" class="tab-pane" id="messages">...</div>#}
+{#                        <div role="tabpanel" class="tab-pane" id="settings">...</div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <form id="form_buying_product" class="form-inline" action="{% url 'basket_adding' %}">#}
+{#                    <input type="number" class="form-control" name="number" id="number" value="1">{% csrf_token %}#}
+{#                    <button type="submit" id="submit_btn" class="btn btn-success btn-buy"#}
+{#                                    data-product_id = "{{ product.id }}"#}
+{#                                    data-name ="{{ product.name }}"#}
+{#                                    data-price ="{{ product.price }}"">#}
+{#                        Купить</button>#}
+{#                </form>#}
+{#            </div>#}
+        </div>
+    </div>
+{% endblock content %}
