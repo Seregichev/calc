@@ -47,7 +47,7 @@ $(document).ready(function () {
 
             }
         })
-    }
+    }//
 
     $(document).on('click','.category-dropdown-li', function () {
         var current_category_name = $(this).data("name");
