@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'import_export',
 
     'items',
+    'calculations',
 ]
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
