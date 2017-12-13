@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Calculate, ItemInCalculate
+from .models import Calculate, ItemInCalculate, ItemInEstimate
 
 class ItemInCalculateInline(admin.TabularInline):
     model = ItemInCalculate
@@ -20,6 +20,15 @@ class ItemInCalculateAdmin (admin.ModelAdmin):
     list_display = [field.name for field in ItemInCalculate._meta.fields]
 
     class Meta:
-        model= ItemInCalculate
+        model = ItemInCalculate
 
 admin.site.register(ItemInCalculate, ItemInCalculateAdmin)
+
+class ItemInEstimateAdmin (admin.ModelAdmin):
+
+    list_display = [field.name for field in ItemInEstimate._meta.fields]
+
+    class Meta:
+        model= ItemInEstimate
+
+admin.site.register(ItemInEstimate, ItemInEstimateAdmin)
