@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-#from landing import views
+from calculations import views
 
 urlpatterns = [
-    # url(r'^landing/$', views.landing, name='landing'),
+    url(r'^estimate/$', views.adding_power_in_estimate, name='adding_power_in_estimate'),
 ]

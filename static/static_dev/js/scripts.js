@@ -68,4 +68,7 @@ $(document).ready(function () {
 
         FilterCategoryItems(filter_category_id=current_category_id, filter_power=current_power);
     });
+
+    $('#id_voltage').addClass('form-control');
+    $('#id_power').addClass('form-control');
 });
