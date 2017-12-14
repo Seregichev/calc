@@ -12,12 +12,15 @@
                     <div>
                         <form action="" method="post" class="form-horizontal text-center form-padding">{% csrf_token %}
                             <div class="form-group">
+                                {{ form.comment }}
+                            </div>
+                            <div class="form-group">
                                 {{ form.voltage }}
                             </div>
                             <div class="form-group">
                                 {{ form.power }}
                             </div>
-                            <button type="submit" class="btn btn-primary btn-orange">Добавить</button>
+                            <button type="submit" class="btn btn-primary btn-orange">Добавить в смету</button>
                         </form>
                     </div>
                 </div>
@@ -36,33 +39,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
+                                {% for item_in_estimate in items_in_estimate %}
+                                    <tr>
+                                        <td>{{ item_in_estimate.id }}</td>
+                                        <td>{{ item_in_estimate.comment }}</td>
+                                        <td>{{ item_in_estimate.item.manufacturer }}</td>
+                                        <td>{{ item_in_estimate.item.series }}</td>
+                                        <td>{{ item_in_estimate.item.vendor_code }}</td>
+                                        <td>{{ item_in_estimate.nmb }}</td>
+                                        <td>{{ item_in_estimate.price_per_item }}</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
