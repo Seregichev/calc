@@ -1,23 +1,42 @@
 from django.shortcuts import render
 from .forms import AddPowerForm
 from .models import ItemInEstimate
+from items.models import Item, ItemCategory
 
 def adding_power_in_estimate(request):
     session_key = request.session.session_key
     print(session_key)
+    items_in_estimate = ItemInEstimate.objects.filter(session_key=session_key, is_active=True, calculate__isnull=True)
 
     form = AddPowerForm(request.POST or None )
 
     if request.POST:
         print(request.POST)
-        print(form.is_valid())
-        if form.is_valid():
-            print('Yes')
-            data = request.POST
-            voltage = data["voltage"]
-            power = data["power"]
+        is_delete = False
+        data = request.POST
+        voltage = data["voltage"]
+        power = data["power"]
+        comment = data["comment"]
 
-            print("Напряжение %s, Ток %s") % voltage, power
+        print('Напряжение '+voltage+'В, Мощность '+power+'кВт')
+        add_item = Item.objects.filter(category=ItemCategory.objects.filter(name='Автоматический выключатель', is_active=True), is_active=True, power=power, voltage=voltage).first()
+        print('Добавлен'+str(add_item.category)+' '+str(add_item.name)+' '+str(add_item.vendor_code))
+        nmb = 1
+
+        if is_delete == "true":
+            ItemInEstimate.objects.filter(id=add_item.id).update(is_active=False)
+        else:
+            created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id,
+                                                                         is_active=True, calculate=None,
+                                                                         nmb=nmb, comment=comment)
+            # if not created:
+            #     print("not created")
+            #     new_product.nmb += int(nmb)
+            #     new_product.save(force_update=True)
+
+
+
+
             # user, created = User.objects.get_or_create(username=phone, defaults={"first_name": name})
             # order = Order.objects.create(user=user, costumer_name=name, costumer_phone=phone, status_id=1)
             #

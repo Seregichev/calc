@@ -47,12 +47,13 @@ class ItemInCalculate(models.Model):
 
 class ItemInEstimate(models.Model):
     session_key = models.CharField(max_length=128,blank=True, null=True, default=None)
-    calculate = models.ForeignKey(Calculate, blank=True, null=True, default=None, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=128, blank=True, null=True, default=None)
     item = models.ForeignKey(Item, blank=True, null=True, default=None, on_delete=models.CASCADE)
     nmb = models.IntegerField(default=1)
     price_per_item = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0) #price_per_item * nmb
     is_active = models.BooleanField(default=True)
+    calculate = models.ForeignKey(Calculate, blank=True, null=True, default=None, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
@@ -80,6 +81,5 @@ def item_in_calculate_post_save(sender,instance,created,**kwargs):
 
     instance.calculate.total_price = calculate_total_price
     instance.calculate.save(force_update=True)
-
 
 post_save.connect(item_in_calculate_post_save, sender=ItemInCalculate)
