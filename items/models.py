@@ -65,7 +65,7 @@ class Item(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")
 
     def __str__(self):
-        return "%s, %s" % (self.name, self.price)
+        return "%s, %s" % (self.vendor_code, self.name)
 
     class Meta:
         verbose_name = "Изделие"

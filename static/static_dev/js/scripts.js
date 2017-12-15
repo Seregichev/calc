@@ -69,6 +69,8 @@ $(document).ready(function () {
         FilterCategoryItems(filter_category_id=current_category_id, filter_power=current_power);
     });
 
+    //Стилизуем формы выпадающих списков django в стиле bootstrap
     $('#id_voltage').addClass('form-control');
     $('#id_power').addClass('form-control');
+    $('#id_type').addClass('form-control');
 });
