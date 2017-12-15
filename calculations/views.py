@@ -3,32 +3,45 @@ from .forms import AddPowerForm
 from .models import ItemInEstimate
 from items.models import Item, ItemCategory
 
+# Функция добавляющая силовые устройства
+def add_power_item(session_key, comment, category, voltage, power, type):
+    add_item = Item.objects.filter(category=ItemCategory.objects.filter(name=category,is_active=True),
+                                   is_active=True, power=power, voltage=voltage).first()
+    nmb = 1
+    created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id,is_active=True, calculate=None,
+                                            nmb=nmb, comment=comment)
+    if not created:
+        print(comment, voltage, power, type)
+
 def adding_power_in_estimate(request):
     session_key = request.session.session_key
     print(session_key)
     items_in_estimate = ItemInEstimate.objects.filter(session_key=session_key, is_active=True, calculate__isnull=True)
 
-    form = AddPowerForm(request.POST or None )
+    form = AddPowerForm(request.POST or None)
 
     if request.POST:
         print(request.POST)
-        is_delete = False
+        # Выгружаем данные из посылки
         data = request.POST
         voltage = data["voltage"]
         power = data["power"]
         comment = data["comment"]
+        type = data["type"]
 
-        print('Напряжение '+voltage+'В, Мощность '+power+'кВт')
-        add_item = Item.objects.filter(category=ItemCategory.objects.filter(name='Автоматический выключатель', is_active=True), is_active=True, power=power, voltage=voltage).first()
-        print('Добавлен'+str(add_item.category)+' '+str(add_item.name)+' '+str(add_item.vendor_code))
-        nmb = 1
+        print('Напряжение '+voltage+'В, Мощность '+power+'кВт'+power+'кВт, Тип пуска '+type)
 
-        if is_delete == "true":
-            ItemInEstimate.objects.filter(id=add_item.id).update(is_active=False)
-        else:
-            created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id,
-                                                                         is_active=True, calculate=None,
-                                                                         nmb=nmb, comment=comment)
+        if type == '1':
+            # Добавить цикл для обхода всех вложенных категорий изделий и оставить только одну функцию добавления
+            add_power_item(session_key=session_key, comment=comment, category="Автоматический выключатель",
+                           voltage=voltage, power=power, type=type)
+            add_power_item(session_key=session_key, comment=comment, category="Контактор",
+                           voltage=voltage, power=power, type=type)
+            # раскоментировать когда в базе появяться тепловые реле
+            # add_power_item(session_key=session_key, comment=comment, category="Тепловое реле",
+            #                voltage=voltage, power=power, type=type)
+
+
             # if not created:
             #     print("not created")
             #     new_product.nmb += int(nmb)
