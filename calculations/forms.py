@@ -13,7 +13,7 @@ class AddPowerForm (forms.Form):
                                .order_by('voltage').distinct(), empty_label="Напряжение")
     power = forms.ModelChoiceField(queryset=Item.objects.filter(is_active=True).values_list('power', flat=True)
                                    .order_by('power').distinct(), empty_label="Мощность")
-    type = forms.ModelChoiceField(queryset=Parameter.objects.filter(
+    parameter = forms.ModelChoiceField(queryset=Parameter.objects.filter(
                         category=CategoryParameter.objects.filter(name='Способ пуска',is_active=True),
                         is_active=True),
                   empty_label="Способ пуска")

@@ -4,15 +4,6 @@ from .models import ItemInEstimate
 from items.models import Item, ItemCategory
 from parameters.models import Parameter
 
-# Функция добавляющая силовые устройства
-def add_power_item(session_key, comment, category, voltage, power, type):
-    add_item = Item.objects.filter(category=ItemCategory.objects.filter(name=category,is_active=True),
-                                   is_active=True, power=power, voltage=voltage).first()
-    nmb = 1
-    created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id,is_active=True, calculate=None,
-                                            nmb=nmb, comment=comment)
-    if not created:
-        print(comment, voltage, power, type)
 
 def adding_power_in_estimate(request):
     session_key = request.session.session_key
@@ -28,13 +19,15 @@ def adding_power_in_estimate(request):
         voltage = data["voltage"]
         power = data["power"]
         comment = data["comment"]
-        type = data["type"]
+        parameter = data["parameter"]
 
-        categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
+        # В базе данных парметров определяем привязанные категории изделий к параметру опрделенному по типу
+        categories_item_in_parameter = Parameter.objects.filter(id=parameter,is_active=True).values(
             'itemcategoryparameter__item_category','itemcategoryparameter__nmb')
 
-        print('Напряжение '+voltage+'В, Мощность '+power+'кВт'+power+'кВт, Тип пуска '+type)
+        print('Напряжение '+voltage+'В, Мощность '+power+'кВт'+power+'кВт, Тип пуска '+parameter)
 
+        # По привязанным категориям к параметру в цикле добвляем изделий с колличеством заданным в привязанном параметре
         for category_item_in_parameter in categories_item_in_parameter:
             print(str(category_item_in_parameter))
             add_item = Item.objects.filter(category=category_item_in_parameter.get('itemcategoryparameter__item_category'),
@@ -44,7 +37,7 @@ def adding_power_in_estimate(request):
                                                     calculate=None,
                                                     nmb=nmb, comment=comment)
             if not created:
-                print('Not created ',comment, voltage, power, type)
+                print('Not created ',comment, voltage, power, parameter)
 
 
         # if type == '1':
