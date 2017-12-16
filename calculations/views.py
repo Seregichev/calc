@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from .forms import AddPowerForm
 from .models import ItemInEstimate
 from items.models import Item, ItemCategory
@@ -29,6 +29,9 @@ def adding_power_in_estimate(request):
         power = data["power"]
         comment = data["comment"]
         type = data["type"]
+        atributes = data["atributes"]
+
+        print(atributes)
 
         categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
             'itemcategoryparameter__item_category','itemcategoryparameter__nmb')
@@ -40,11 +43,19 @@ def adding_power_in_estimate(request):
             add_item = Item.objects.filter(category=category_item_in_parameter.get('itemcategoryparameter__item_category'),
                                            is_active=True, power=power, voltage=voltage).first()
             nmb = category_item_in_parameter.get('itemcategoryparameter__nmb')
-            created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id, is_active=True,
-                                                    calculate=None,
-                                                    nmb=nmb, comment=comment)
-            if not created:
-                print('Not created ',comment, voltage, power, type)
+
+            if add_item:
+                created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id, is_active=True,
+                                                        calculate=None,
+                                                        nmb=nmb, comment=comment)
+                if not created:
+                    print('Not created')
+                    msg_error = u'Невозможно добавить изделие в смету. Обратитесь к Администратору'
+                    render_to_response('items/estimate.html', {'error': error})
+            else:
+                print('Not found')
+                error = u'Невозможно подобрать изделие по заданным критериям подбора.'
+                render_to_response('items/estimate.html',{'error': error})
 
 
         # if type == '1':
