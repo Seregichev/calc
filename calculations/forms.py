@@ -1,12 +1,12 @@
 from django import forms
 from items.models import Item
-from parameters.models import Parameter, CategoryParameter
+from parameters.models import Parameter, CategoryParameter, Atribute, CategoryAtribute
 
 
 
 class AddPowerForm (forms.Form):
     comment = forms.CharField(required=True,widget=forms.TextInput(
-                                attrs={'placeholder': 'Примечание','class':'form-control'}
+                                attrs={'placeholder': 'Назначение','class':'form-control'}
                                 ))
 
     voltage = forms.ModelChoiceField(queryset=Item.objects.filter(is_active=True).values_list('voltage', flat=True)
@@ -17,3 +17,6 @@ class AddPowerForm (forms.Form):
                         category=CategoryParameter.objects.filter(name='Способ пуска',is_active=True),
                         is_active=True),
                   empty_label="Способ пуска")
+    atributes = forms.ModelMultipleChoiceField(queryset=Atribute.objects.filter(
+        category=CategoryAtribute.objects.filter(name='Коммуникация',is_active=True), is_active=True),
+        label='Атрибуты')

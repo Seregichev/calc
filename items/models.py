@@ -49,14 +49,16 @@ class Item(models.Model):
     temperature_input = models.DecimalField(max_digits=4, decimal_places=0, default=0,
                                             verbose_name="Температурные входы [шт]")
 
-    profinet = models.BooleanField(default=False, verbose_name="ProfiNET")
-    profibus = models.BooleanField(default=False, verbose_name="ProfiBus")
-    ethernet = models.BooleanField(default=False, verbose_name="EtherNET")
-    rs484 = models.BooleanField(default=False, verbose_name="RS484")
+    # profinet = models.BooleanField(default=False, verbose_name="ProfiNET")
+    # profibus = models.BooleanField(default=False, verbose_name="ProfiBus")
+    # ethernet = models.BooleanField(default=False, verbose_name="EtherNET")
+    # rs484 = models.BooleanField(default=False, verbose_name="RS484")
 
     height = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Высота")
     width = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Ширина")
     depth = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Глубина")
+
+    atributes = models.ManyToManyField('parameters.Atribute', blank=True, default=None, verbose_name="Атрибуты изделия")
 
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Цена")
