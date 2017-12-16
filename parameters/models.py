@@ -32,6 +32,7 @@ class Parameter(models.Model):
 class ItemCategoryParameter(models.Model):
     parameter = models.ForeignKey(Parameter, blank=True, null=True, default=None, verbose_name="Тип пуска")
     item_category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория изделия")
+    nmb = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
     created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import AddPowerForm
 from .models import ItemInEstimate
 from items.models import Item, ItemCategory
+from parameters.models import Parameter
 
 # Функция добавляющая силовые устройства
 def add_power_item(session_key, comment, category, voltage, power, type):
@@ -29,14 +30,29 @@ def adding_power_in_estimate(request):
         comment = data["comment"]
         type = data["type"]
 
+        categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
+            'itemcategoryparameter__item_category','itemcategoryparameter__nmb')
+
         print('Напряжение '+voltage+'В, Мощность '+power+'кВт'+power+'кВт, Тип пуска '+type)
 
-        if type == '1':
-            # Добавить цикл для обхода всех вложенных категорий изделий и оставить только одну функцию добавления
-            add_power_item(session_key=session_key, comment=comment, category="Автоматический выключатель",
-                           voltage=voltage, power=power, type=type)
-            add_power_item(session_key=session_key, comment=comment, category="Контактор",
-                           voltage=voltage, power=power, type=type)
+        for category_item_in_parameter in categories_item_in_parameter:
+            print(str(category_item_in_parameter))
+            add_item = Item.objects.filter(category=category_item_in_parameter.get('itemcategoryparameter__item_category'),
+                                           is_active=True, power=power, voltage=voltage).first()
+            nmb = category_item_in_parameter.get('itemcategoryparameter__nmb')
+            created = ItemInEstimate.objects.create(session_key=session_key, item_id=add_item.id, is_active=True,
+                                                    calculate=None,
+                                                    nmb=nmb, comment=comment)
+            if not created:
+                print('Not created ',comment, voltage, power, type)
+
+
+        # if type == '1':
+        #     # Добавить цикл для обхода всех вложенных категорий изделий и оставить только одну функцию добавления
+        #     add_power_item(session_key=session_key, comment=comment, category="Автоматический выключатель",
+        #                    voltage=voltage, power=power, type=type)
+        #     add_power_item(session_key=session_key, comment=comment, category="Контактор",
+        #                    voltage=voltage, power=power, type=type)
             # раскоментировать когда в базе появяться тепловые реле
             # add_power_item(session_key=session_key, comment=comment, category="Тепловое реле",
             #                voltage=voltage, power=power, type=type)
