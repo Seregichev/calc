@@ -58,7 +58,8 @@ class Atribute(models.Model):
 class ItemCategoryParameter(models.Model):
     parameter = models.ForeignKey(Parameter, blank=True, null=True, default=None, verbose_name="Тип пуска")
     item_category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория изделия")
-    nmb = models.IntegerField(default=1)
+    nmb = models.IntegerField(default=1, verbose_name="Колличество", help_text="Укажите колличество изделий выбранной категории которые должны автоматически добавляться")
+    item_paramater_do_more = models.BooleanField(default=False, verbose_name="На ступень выше?", help_text="Отметьте галочкой, если необходимо подбирать изделие на ступень выше")
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
     created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")

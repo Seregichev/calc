@@ -6,8 +6,8 @@ from parameters.models import Parameter, CategoryParameter, Atribute, CategoryAt
 
 class AddPowerForm (forms.Form):
     comment = forms.CharField(required=True,widget=forms.TextInput(
-                                attrs={'placeholder': 'Назначение','class':'form-control'}
-                                ))
+                                attrs={'placeholder': 'Назначение','class':'form-control'})
+                              )
 
     voltage = forms.ModelChoiceField(queryset=Item.objects.filter(is_active=True).values_list('voltage', flat=True)
                                .order_by('voltage').distinct(), empty_label="Напряжение")
@@ -17,6 +17,6 @@ class AddPowerForm (forms.Form):
                         category=CategoryParameter.objects.filter(name='Способ пуска',is_active=True),
                         is_active=True),
                   empty_label="Способ пуска")
-    atributes = forms.ModelMultipleChoiceField(queryset=Atribute.objects.filter(
+    atributes = forms.ModelChoiceField(queryset=Atribute.objects.filter(
         category=CategoryAtribute.objects.filter(name='Коммуникация',is_active=True), is_active=True),
-        label='Атрибуты')
+        label='Атрибуты', required=False)
