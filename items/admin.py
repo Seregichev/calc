@@ -2,11 +2,12 @@ from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 from .models import *
 
-
+# класс выводит изображения изделия внизу карточки товара
 class ItemImageInline(admin.TabularInline):
     model = ItemImage
     extra = 0
 
+# класс выводит дополнительные изделия внизу карточки товара
 class AddItemInline(admin.TabularInline):
     model = AddItem
     fk_name = 'main_item'
@@ -16,9 +17,14 @@ class AddItemInline(admin.TabularInline):
     # фильтруем выпадающий список поля доп. изделия по серии редактируемого изделия
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "adding_item":
-            kwargs["queryset"] = Item.objects.filter(series=Item.objects.filter(
-                                                        id=request.path_info.split('/')[4]).values('series')
-                                                     )
+            gotten_id = ''
+            # из адреса request выбираем только id изделия
+            for e in request.path_info.split('/'):
+                if e.isdigit():
+                    gotten_id = e
+            # по полученному id изделия находим его серию и отфильтровываем выпадающий список изделий по серии
+            kwargs["queryset"] = Item.objects.filter(series=Item.objects.filter(id=gotten_id).values('series'),
+                                                     is_active=True)
         return super(AddItemInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ItemCategoryAdmin (admin.ModelAdmin):
