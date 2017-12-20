@@ -18,5 +18,5 @@ class AddPowerForm (forms.Form):
                         is_active=True),
                   empty_label="Способ пуска")
     atributes = forms.ModelChoiceField(queryset=Atribute.objects.filter(
-        category=CategoryAtribute.objects.filter(name='Коммуникация',is_active=True), is_active=True),
+        category=CategoryAtribute.objects.filter(name='Коммуникация', is_active=True), is_active=True),
         label='Атрибуты', required=False)
