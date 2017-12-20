@@ -25,11 +25,10 @@ class ItemManufacturer(models.Model):
 
 
 class Item(models.Model):
-    category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория",
-                                 on_delete=models.CASCADE)
+    category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория", on_delete=models.DO_NOTHING)
     manufacturer = models.ForeignKey(ItemManufacturer, blank=True, null=True, default=None,
-                                     verbose_name="Производитель", on_delete=models.CASCADE)
-    series = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Серия",)
+                                     verbose_name="Производитель", on_delete=models.DO_NOTHING)
+    series = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Серия")
     name = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Название")
     vendor_code = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Артикул")
     description = models.TextField(blank=True, null=True, default=None, verbose_name="Описание")
@@ -48,11 +47,6 @@ class Item(models.Model):
                                         verbose_name="Аналоговые выходы [шт]")
     temperature_input = models.DecimalField(max_digits=4, decimal_places=0, default=0,
                                             verbose_name="Температурные входы [шт]")
-
-    # profinet = models.BooleanField(default=False, verbose_name="ProfiNET")
-    # profibus = models.BooleanField(default=False, verbose_name="ProfiBus")
-    # ethernet = models.BooleanField(default=False, verbose_name="EtherNET")
-    # rs484 = models.BooleanField(default=False, verbose_name="RS484")
 
     height = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Высота")
     width = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Ширина")
@@ -74,7 +68,7 @@ class Item(models.Model):
         verbose_name_plural = "Изделия"
 
 class ItemImage(models.Model):
-    item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Изделие", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Изделие", on_delete=models.DO_NOTHING)
     image = models.ImageField (upload_to='items_images/', verbose_name="Изображение")
     is_main = models.BooleanField(default=False, verbose_name="Основное?")
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
@@ -87,3 +81,20 @@ class ItemImage(models.Model):
     class Meta:
         verbose_name = "Изображение"
         verbose_name_plural = "Изображения"
+
+# Клас дополнительных изделий, нужен для подбора дополнительных изделий обязательных и необязательных
+class AddItem(models.Model):
+    main_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Основное изделие", related_name="main_item", on_delete=models.CASCADE)
+    adding_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Дополнительное изделие", related_name="add_item", on_delete=models.DO_NOTHING)
+    required = models.BooleanField(default=False, verbose_name="Обязательное устройство", help_text="Отметьте галочкой, если необходимо обязательно добавить изделие")
+    is_active = models.BooleanField(default=True, verbose_name="Активная связь?")
+    created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")
+
+    def __str__(self):
+        return "%s" % (self.adding_item)
+
+    class Meta:
+        unique_together = ("main_item", "adding_item")
+        verbose_name = "Дополнительное изделие"
+        verbose_name_plural = "Дополнительные изделия"
