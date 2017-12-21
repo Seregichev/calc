@@ -5,7 +5,7 @@ from parameters.models import Parameter, CategoryParameter, Atribute, CategoryAt
 
 
 class AddPowerForm (forms.Form):
-    comment = forms.CharField(required=True,widget=forms.TextInput(
+    comment = forms.CharField(required=True,  widget=forms.TextInput(
                                 attrs={'placeholder': 'Назначение','class':'form-control'})
                               )
 
@@ -19,4 +19,4 @@ class AddPowerForm (forms.Form):
                   empty_label="Способ пуска")
     atributes = forms.ModelChoiceField(queryset=Atribute.objects.filter(
         category=CategoryAtribute.objects.filter(name='Коммуникация', is_active=True), is_active=True),
-        label='Атрибуты', required=False)
+        label='Атрибуты', required=False, empty_label="Стандарт")
