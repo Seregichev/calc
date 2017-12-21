@@ -11,7 +11,7 @@ def created_item_in_estimate(session_key, item_id, is_active, calculate, nmb, co
                                         calculate=calculate, nmb=nmb, comment=comment)
     except:
         msg_error = u'Невозможно добавить изделие в смету. Обратитесь в тех.поддержку'
-        render_to_response('items/estimate.html', {'error': msg_error})
+        return render_to_response('items/estimate.html', {'error': msg_error})
 
     else:
         return created
@@ -32,10 +32,8 @@ def adding_power_in_estimate(request):
         power = data["power"]
         comment = data["comment"]
         type = data["type"]
-        atributes = data["atributes"]
+        atributes = data["atributes"] or None
 
-        print(atributes)
-        print('Напряжение ' + voltage + 'В, Мощность ' + power + 'кВт, Тип пуска ' + type)
 
         # по типу пуска в БД параметров забираем связанные активные модели, а именно - категорию и колличество изделий
         categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
@@ -66,7 +64,7 @@ def adding_power_in_estimate(request):
                 # добавляем устройство в смету
                 created_item = created_item_in_estimate(session_key=session_key, item_id=add_item.id, is_active=True,
                                                         calculate=None, nmb=nmb, comment=comment)
-
+                # определяем глобальные переменные
                 global last_required
                 global last_required_nmb
                 last_required = None
@@ -130,8 +128,12 @@ def adding_power_in_estimate(request):
 
 
 
-        # Сюда нужно добавить проверку корзины по наличию хотябы одного устройства с атрибутом фильтрации,
-        # если такового нет, то удаляем весь подбор с данным коментарием
-        print(u'Кот проходит')
+        # Проверка добавленных в корзину изделий на наличие в них запрошенного атрибута, если нет то удаляем и выводим сообщение об ошибке
+        if not ItemInEstimate.objects.filter(session_key=session_key, is_active=True,  comment=comment, item__atributes=atributes):
+            delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
+            delete_items.delete()
+            msg_error = u'В базе данных нет элементов с таким атрибутом. Пожалуйста измените запрос'
+
+
 
     return render(request, 'items/estimate.html', locals())
