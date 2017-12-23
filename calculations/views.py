@@ -11,30 +11,30 @@ def created_item_in_estimate(session_key, item_id, is_active, calculate, nmb, co
                                         calculate=calculate, nmb=nmb, comment=comment)
     except:
         msg_error = u'Невозможно добавить изделие в смету. Обратитесь в тех.поддержку'
-        return render_to_response('items/estimate.html', {'error': msg_error})
+        return render_to_response('estimate/estimate.html', {'error': msg_error})
 
     else:
         return created
 
-
-def adding_power_in_estimate(request):
+def base_calculate(request):
     session_key = request.session.session_key
-    print(session_key)
+
+    # выдаем таблицу для отображения изделий в смете
     items_in_estimate = ItemInEstimate.objects.filter(session_key=session_key, is_active=True, calculate__isnull=True)
 
+    # отображаем форму запроса для формирования силовой
     form = AddPowerForm(request.POST or None)
 
     if request.POST:
         # Выгружаем данные из посылки
         data = request.POST
+        print(data)
         voltage = data["voltage"]
         power = data["power"]
         comment = data["comment"]
         type = data["type"]
         atributes = data["atributes"] or None
         manufacturer = data["manufacturer"] or None
-
-        print(manufacturer)
 
         # по типу пуска в БД параметров забираем связанные активные модели, а именно - категорию и колличество изделий
         categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
@@ -137,13 +137,29 @@ def adding_power_in_estimate(request):
                 msg_error = u'В базе данных нет элементов с таким критериями. Пожалуйста измените запрос'
 
 
-
-
         # Проверка добавленных в корзину изделий на наличие в них запрошенного атрибута, если нет то удаляем и выводим сообщение об ошибке
         if not ItemInEstimate.objects.filter(session_key=session_key, is_active=True,  comment=comment, item__atributes=atributes):
             delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
             delete_items.delete()
             msg_error = u'В базе данных нет элементов с таким атрибутом. Пожалуйста измените запрос'
 
+    return render(request, 'calculate/base_calculate.html', locals())
 
-    return render(request, 'items/estimate.html', locals())
+def delete_comment(request):
+    session_key = request.session.session_key
+
+    # выдаем таблицу для отображения изделий в смете
+    items_in_estimate = ItemInEstimate.objects.filter(session_key=session_key, is_active=True, calculate__isnull=True)
+
+    # отображаем форму запроса для формирования силовой
+    form = AddPowerForm(request.POST or None)
+
+    if request.POST:
+        # Выгружаем данные из посылки
+        data = request.POST
+        comment = data["delete_comment"] or None
+
+        delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
+        delete_items.delete()
+
+    return render(request, 'calculate/base_calculate.html', locals())

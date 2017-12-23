@@ -18,5 +18,6 @@ from django.contrib import admin
 from calculations import views
 
 urlpatterns = [
-    url(r'^estimate/$', views.adding_power_in_estimate, name='adding_power_in_estimate'),
+    url(r'^base_calculate/$', views.base_calculate, name='base_calculate'),
+    url(r'^delete_comment/$', views.delete_comment, name='delete_comment'),
 ]
