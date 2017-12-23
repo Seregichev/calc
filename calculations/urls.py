@@ -19,5 +19,4 @@ from calculations import views
 
 urlpatterns = [
     url(r'^base_calculate/$', views.base_calculate, name='base_calculate'),
-    url(r'^delete_comment/$', views.delete_comment, name='delete_comment'),
 ]

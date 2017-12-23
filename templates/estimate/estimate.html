@@ -15,10 +15,10 @@
             {% for item_in_estimate in items_in_estimate %}
                 <tr>
                     <td id="item-{{ item_in_estimate.id }}">
-                        <form class="form-inline" action="/delete_comment/" method="post">{% csrf_token %}
+                        <form class="form-inline" action="" method="post">{% csrf_token %}
                             <div class="form-grop">
                                 {{ item_in_estimate.comment }}
-                                <input class="hidden" type="text" name="delete_comment" value="{{ item_in_estimate.comment }}">
+                                <input class="hidden" type="text" name='delete_comment' value='{{ item_in_estimate.comment }}'>
                                 <button type="submit" class="close" data-dismiss="modal" aria-label="Close" title="Удалить">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
