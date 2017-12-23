@@ -15,6 +15,10 @@
             {% include 'navbar.html' %}
             {% block content %}
             {% endblock content %}
+
+            {% if msg_error %}
+                <script>alert( "{{ msg_error }}" );</script>
+            {% endif %}
         </div>
     </div>
     {% include 'footer.html' %}

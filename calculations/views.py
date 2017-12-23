@@ -25,7 +25,6 @@ def adding_power_in_estimate(request):
     form = AddPowerForm(request.POST or None)
 
     if request.POST:
-        print(request.POST)
         # Выгружаем данные из посылки
         data = request.POST
         voltage = data["voltage"]
@@ -33,7 +32,9 @@ def adding_power_in_estimate(request):
         comment = data["comment"]
         type = data["type"]
         atributes = data["atributes"] or None
+        manufacturer = data["manufacturer"] or None
 
+        print(manufacturer)
 
         # по типу пуска в БД параметров забираем связанные активные модели, а именно - категорию и колличество изделий
         categories_item_in_parameter = Parameter.objects.filter(id=type,is_active=True).values(
@@ -43,20 +44,26 @@ def adding_power_in_estimate(request):
         # обходим циклом все связанные изделий из подобранных
         for category_item_in_parameter in categories_item_in_parameter:
 
+            add_item = Item.objects.filter(
+                category=category_item_in_parameter.get('itemcategoryparameter__item_category'), is_active=True)
+
             # если в параметре для соответсвующей категории указан подбор на ступень выше, то...
             if category_item_in_parameter.get('itemcategoryparameter__item_paramater_do_more'):
                 # получаем устройство соответсвующее параметрам отдбора с условием подбора мощности на ступень выше
-                add_item = Item.objects.filter(
-                    category=category_item_in_parameter.get('itemcategoryparameter__item_category'),
-                    is_active=True, power__gt=power, voltage__gte=voltage).first()
+                add_item = add_item.filter(power__gt=power, voltage__gte=voltage)
             else:
                 # иначе получаем устройство соответсвующее параметрам отдбора или выше по мощности и напряжению
-                add_item = Item.objects.filter(
-                    category=category_item_in_parameter.get('itemcategoryparameter__item_category'),
-                    is_active=True, power__gte=power, voltage__gte=voltage).first()
+                add_item = add_item.filter(power__gte=power, voltage__gte=voltage)
+
+            if manufacturer:
+                add_item = add_item.filter(manufacturer__name=manufacturer).first()
+            else:
+                add_item = add_item.first()
 
             # получаем количество изделий
             nmb = category_item_in_parameter.get('itemcategoryparameter__nmb')
+
+            print(add_item)
 
             # если устройство найдено то...
             if add_item:
@@ -124,6 +131,10 @@ def adding_power_in_estimate(request):
                             last_required = None
                             last_required_nmb = None
                             break
+            else:
+                delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
+                delete_items.delete()
+                msg_error = u'В базе данных нет элементов с таким критериями. Пожалуйста измените запрос'
 
 
 
@@ -133,7 +144,6 @@ def adding_power_in_estimate(request):
             delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
             delete_items.delete()
             msg_error = u'В базе данных нет элементов с таким атрибутом. Пожалуйста измените запрос'
-
 
 
     return render(request, 'items/estimate.html', locals())

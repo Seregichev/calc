@@ -25,7 +25,7 @@ SECRET_KEY = '#_rwod@mtia$%h2894mzpm*qoxs(d@_f5w1=*n_l72!0n6eo$l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vicserman.pythonanywhere.com']
 
 
 # Application definition
