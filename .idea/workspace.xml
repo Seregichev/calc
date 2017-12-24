@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="72af2d2c-673c-4343-9888-719a82676443" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
+    <list default="true" id="72af2d2c-673c-4343-9888-719a82676443" name="Default" comment="реализована функция удаления изделий из сметы по комменту&#10;Реализована функция затирания коментария после удаления">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/calculations/views.py" afterPath="$PROJECT_DIR$/calculations/views.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,8 +31,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/calculations/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+            <state relative-caret-position="378">
+              <caret line="37" column="15" lean-forward="true" selection-start-line="37" selection-start-column="15" selection-end-line="37" selection-end-column="15" />
               <folding>
                 <element signature="e#0#55#0" expanded="true" />
               </folding>
@@ -123,7 +121,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="v2.0.5" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
   </component>
@@ -560,7 +558,14 @@
       <option name="project" value="LOCAL" />
       <updated>1514066202887</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="реализована функция удаления изделий из сметы по комменту&#10;Реализована функция затирания коментария после удаления">
+      <created>1514142209725</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1514142209725</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -661,7 +666,8 @@
     <MESSAGE value="Добавлена проверка добавленных изделий на наличие хоть в одном атрибута, и если нет таких то удаление всхе добавленных по совпадению комментария" />
     <MESSAGE value="Добавлена фильтрация по производителю, а также объединение ячеек по одинаковому коментарию (назначению).&#10;Вывод ошибки ввиде alert реализована в base.html" />
     <MESSAGE value="Добавлена кнопка удаления но не реализована функция удаления" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлена кнопка удаления но не реализована функция удаления" />
+    <MESSAGE value="реализована функция удаления изделий из сметы по комменту&#10;Реализована функция затирания коментария после удаления" />
+    <option name="LAST_COMMIT_MESSAGE" value="реализована функция удаления изделий из сметы по комменту&#10;Реализована функция затирания коментария после удаления" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -953,8 +959,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/calculations/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="48">
-          <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+        <state relative-caret-position="378">
+          <caret line="37" column="15" lean-forward="true" selection-start-line="37" selection-start-column="15" selection-end-line="37" selection-end-column="15" />
           <folding>
             <element signature="e#0#55#0" expanded="true" />
           </folding>
