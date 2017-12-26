@@ -46,7 +46,7 @@ class ItemInCalculate(models.Model):
         super(ItemInCalculate, self).save(*args, **kwargs)
 
 class ItemInEstimate(models.Model):
-    session_key = models.CharField(max_length=128,blank=True, null=True, default=None)
+    session_key = models.CharField(max_length=128, blank=True, null=True, default=None)
     comment = models.CharField(max_length=128, blank=True, null=True, default=None)
     item = models.ForeignKey(Item, blank=True, null=True, default=None, on_delete=models.CASCADE)
     nmb = models.IntegerField(default=1)

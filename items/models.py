@@ -76,7 +76,7 @@ class ItemImage(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")
 
     def __str__(self):
-        return "%s" % (self.id,)
+        return "%s" % (self.id)
 
     class Meta:
         verbose_name = "Изображение"
@@ -84,9 +84,12 @@ class ItemImage(models.Model):
 
 # Клас дополнительных изделий, нужен для подбора дополнительных изделий обязательных и необязательных
 class AddItem(models.Model):
-    main_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Основное изделие", related_name="main_item", on_delete=models.DO_NOTHING)
-    adding_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Дополнительное изделие", related_name="adding_item", on_delete=models.DO_NOTHING)
-    required = models.BooleanField(default=False, verbose_name="Обязательное устройство", help_text="Отметьте галочкой, если необходимо обязательно добавить изделие")
+    main_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Основное изделие",
+                                  related_name="adding_item", on_delete=models.DO_NOTHING)
+    adding_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Дополнительное изделие",
+                                    related_name="main_item", on_delete=models.DO_NOTHING)
+    required = models.BooleanField(default=False, verbose_name="Обязательное устройство",
+                                   help_text="Отметьте галочкой, если необходимо обязательно добавить изделие")
     nmb = models.IntegerField(default=1, verbose_name="Колличество",
                               help_text="Укажите колличество выбранных дополнительных изделий которые должны автоматически добавляться")
     created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")

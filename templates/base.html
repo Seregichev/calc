@@ -16,10 +16,6 @@
             {% block content %}
                     <!-- Здесь отображается материал -->
             {% endblock content %}
-            <!-- Если есть ошибки выводим их всплывающим окном -->
-            {% if msg_error %}
-                <script>alert( "{{ msg_error }}" );</script>
-            {% endif %}
         </div>
     </div>
     {% include 'footer.html' %}
