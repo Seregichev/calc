@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72af2d2c-673c-4343-9888-719a82676443" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/calculate/base_calculate.html" afterPath="$PROJECT_DIR$/templates/calculate/base_calculate.html" />
     </list>
@@ -75,8 +74,8 @@
       <file leaf-file-name="base_calculate.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/calculate/base_calculate.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="210">
+              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -578,7 +577,14 @@
       <option name="project" value="LOCAL" />
       <updated>1514404199720</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Стилизовано отображение на мобильных">
+      <created>1514405245766</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1514405245766</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TodoView">
@@ -690,7 +696,8 @@
     <MESSAGE value="Добавлена фильтрация по производителю, а также объединение ячеек по одинаковому коментарию (назначению).&#10;Вывод ошибки ввиде alert реализована в base.html" />
     <MESSAGE value="Добавлена кнопка удаления но не реализована функция удаления" />
     <MESSAGE value="Добавлена возможность добавления клемм для силовой сборки.&#10;Стилизован фронтенд добавления изделий двигателя" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлена возможность добавления клемм для силовой сборки.&#10;Стилизован фронтенд добавления изделий двигателя" />
+    <MESSAGE value="Стилизовано отображение на мобильных" />
+    <option name="LAST_COMMIT_MESSAGE" value="Стилизовано отображение на мобильных" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1006,8 +1013,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/calculate/base_calculate.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        <state relative-caret-position="210">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
