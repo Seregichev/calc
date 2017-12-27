@@ -85,9 +85,9 @@ class ItemImage(models.Model):
 # Клас дополнительных изделий, нужен для подбора дополнительных изделий обязательных и необязательных
 class AddItem(models.Model):
     main_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Основное изделие",
-                                  related_name="adding_item", on_delete=models.DO_NOTHING)
+                                  related_name="main_item", on_delete=models.DO_NOTHING)
     adding_item = models.ForeignKey(Item, blank=True, null=True, default=None, verbose_name="Дополнительное изделие",
-                                    related_name="main_item", on_delete=models.DO_NOTHING)
+                                    related_name="adding_item", on_delete=models.DO_NOTHING)
     required = models.BooleanField(default=False, verbose_name="Обязательное устройство",
                                    help_text="Отметьте галочкой, если необходимо обязательно добавить изделие")
     nmb = models.IntegerField(default=1, verbose_name="Колличество",

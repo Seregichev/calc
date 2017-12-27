@@ -28,24 +28,35 @@
                 {{ form.power }}
                 <div class="input-group-addon">[кВт]</div>
             </div>
-            <div class="form-group">
+            <div class="form-group input-group">
+                <div class="input-group-addon">Тип</div>
                 {{ form.type }}
             </div>
-            <a role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <a role="button" data-toggle="collapse" href="#collapseAdding" aria-expanded="false" aria-controls="collapseAdding">
               Дополнительно
             </a>
-            <div class="collapse" id="collapseExample">
-                <div class="form-group">
+            <div class="collapse" id="collapseAdding">
+                <hr>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Интерфейс</div>
                     {{ form.atributes }}
                 </div>
-                <div class="form-group">
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Производитель</div>
                     {{ form.manufacturer }}
                 </div>
                 <div class="form-group">
-                    {{ form.choise_reverse }} {{ form.choise_reverse.label }}
+                    {{ form.choise_reverse.label }} - {{ form.choise_reverse }}
+                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ form.choise_reverse.help_text }}" aria-hidden="true"></span>
                 </div>
                 <div class="form-group">
-                    {{ form.choise_bypass }} {{ form.choise_bypass.label }}
+                    {{ form.choise_bypass.label }} - {{ form.choise_bypass }}
+                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ form.choise_bypass.help_text }}" aria-hidden="true"></span>
+                </div>
+                <hr>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Клеммы</div>
+                    {{ form.manufacturer_terminals }}
                 </div>
             </div>
             <hr>

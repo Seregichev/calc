@@ -44,3 +44,7 @@ html,body{
 .navbar-top{
     height: 20px;
 }
+
+.white-spase-left{
+    margin-left:2em;
+}

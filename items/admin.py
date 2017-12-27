@@ -23,8 +23,9 @@ class AddItemInline(admin.TabularInline):
                 if e.isdigit():
                     gotten_id = e
             # по полученному id изделия находим его серию и отфильтровываем выпадающий список изделий по серии
-            kwargs["queryset"] = Item.objects.filter(series=Item.objects.filter(id=gotten_id).values('series'),
-                                                     is_active=True)
+
+            kwargs["queryset"] = Item.objects.filter(series=Item.objects.filter(id=gotten_id or None, is_active=True)
+                                                     .values('series'),is_active=True)
         return super(AddItemInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ItemCategoryAdmin (admin.ModelAdmin):
