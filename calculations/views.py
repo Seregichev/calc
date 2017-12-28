@@ -3,12 +3,13 @@ from .forms import AddPowerForm
 from .models import ItemInEstimate
 from items.models import Item, ItemCategory
 from parameters.models import Parameter
+from uuid import uuid4
 
 
 # функция добавления изделия в смету или выдачи ошибки
-def created_item_in_estimate(session_key, item_id, is_active, calculate, nmb, comment):
+def created_item_in_estimate(session_key, uuid_id, item_id, is_active, calculate, nmb, comment):
     print(item_id)
-    created = ItemInEstimate.objects.create(session_key=session_key, item_id=item_id, is_active=is_active,
+    created = ItemInEstimate.objects.create(session_key=session_key, uuid_id=uuid_id, item_id=item_id, is_active=is_active,
                                         calculate=calculate, nmb=nmb, comment=comment)
     if created:
         return created
@@ -16,14 +17,21 @@ def created_item_in_estimate(session_key, item_id, is_active, calculate, nmb, co
         global msg_error
         msg_error = u'Невозможно добавить изделие в смету. Обратитесь в тех.поддержку'
         return locals()
-
-def delete_comment_in_estimate(session_key, comment):
-    delete_items = ItemInEstimate.objects.filter(session_key=session_key, comment=comment)
+# функция удаления из сметы всех изделий по совпадению сессии и коментария
+def delete_uuid_id_in_estimate(session_key, uuid_id):
+    delete_items = ItemInEstimate.objects.filter(session_key=session_key, uuid_id=uuid_id)
     delete_items.delete()
 
 def add_power_items_in_estimate(session_key, data):
+    # глобальная переменная для вывода ошибки
     global msg_error
+
+    # переменная служащая для понимания, все ли изделия добавили или что-то не нашли. True значит не нашли что-то.
     not_found_item = False
+
+    # создаем уникальный идентификатор
+    uuid_id = uuid4()
+    print(uuid_id)
 
     # Выгружаем данные из посылки
     comment = u'Привод '+data["comment"]
@@ -94,8 +102,13 @@ def add_power_items_in_estimate(session_key, data):
         if add_item:
 
             # добавляем устройство в смету
-            created_item = created_item_in_estimate(session_key=session_key, item_id=add_item.id, is_active=True,
-                                                    calculate=None, nmb=nmb, comment=comment)
+            created_item = created_item_in_estimate(session_key=session_key,
+                                                    uuid_id=uuid_id,
+                                                    item_id=add_item.id,
+                                                    is_active=True,
+                                                    calculate=None,
+                                                    nmb=nmb,
+                                                    comment=comment)
             # определяем глобальные переменные
             global last_required
             global last_required_nmb
@@ -115,6 +128,7 @@ def add_power_items_in_estimate(session_key, data):
                     # И если атрибут из формы равен атрибуту обязательного изделия
                     if atributes and str(adding_item.get('main_item__adding_item__atributes')) == str(atributes):
                         created_item_in_estimate(session_key=session_key,
+                                                 uuid_id=uuid_id,
                                                  item_id=adding_item.get('main_item__adding_item'),
                                                  is_active=True,
                                                  calculate=None,
@@ -134,6 +148,7 @@ def add_power_items_in_estimate(session_key, data):
                     # если обязательные изделия были, но больше не будут из-за сортировки в цикле то добавляем его
                     if last_required:
                         created_item_in_estimate(session_key=session_key,
+                                                 uuid_id=uuid_id,
                                                  item_id=last_required,
                                                  is_active=True,
                                                  calculate=None,
@@ -146,6 +161,7 @@ def add_power_items_in_estimate(session_key, data):
                     # если у дополнительного изделия совпали атрибуты с формой атрибута, то добавляем
                     if atributes and str(adding_item.get('main_item__adding_item__atributes')) == str(atributes):
                         created_item_in_estimate(session_key=session_key,
+                                                 uuid_id=uuid_id,
                                                  item_id=adding_item.get('main_item__adding_item'),
                                                  is_active=True,
                                                  calculate=None,
@@ -158,6 +174,7 @@ def add_power_items_in_estimate(session_key, data):
             # если цикл for по указанным в параметре категориям изделия закончился а мы не добавили последнее обязательное изделие то добавляем его
             if last_required:
                 created_item_in_estimate(session_key=session_key,
+                                         uuid_id=uuid_id,
                                          item_id=last_required,
                                          is_active=True,
                                          calculate=None,
@@ -177,15 +194,17 @@ def add_power_items_in_estimate(session_key, data):
         msg_error += u'В базе данных нет элементов с атрибутом %s. ' % (str(atributes))
 
     if not_found_item:
-        delete_comment_in_estimate(session_key=session_key, comment=comment)
+        delete_uuid_id_in_estimate(session_key=session_key, uuid_id=uuid_id)
         msg_error += u'Пожалуйста измените запрос.'
     return locals()
 
 def delete_items(session_key, data):
 
-    delete_comment = data["comment"]
+    uuid_id = data["uuid_id"]
 
-    delete_comment_in_estimate(session_key=session_key, comment=delete_comment)
+    print(uuid_id)
+
+    delete_uuid_id_in_estimate(session_key=session_key, uuid_id=uuid_id)
 
     return locals()
 

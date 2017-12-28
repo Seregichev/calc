@@ -13,6 +13,7 @@ class AddPowerForm (forms.Form):
     # обозначаем в параметре inital как форма добавления изделий комутации электродвигателя
     appointment = forms.IntegerField(widget=forms.HiddenInput(), initial='add_power_items')
 
+
     comment = forms.CharField(required=True,  widget=forms.TextInput(
                                 attrs={'placeholder': u'Назначение', 'class': 'form-control'}),
                               error_messages={'required': 'Пожалуйста укажите назначение'},

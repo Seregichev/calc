@@ -14,12 +14,12 @@
         <tbody>
             {% for item_in_estimate in items_in_estimate %}
                 <tr>
-                    <td id="item-{{ item_in_estimate.id }}">
+                    <td id="item-{{ item_in_estimate.id }}" data-uuid="{{ item_in_estimate.uuid_id }}">
                         <form class="form-inline" action="" method="post">{% csrf_token %}
                             <div class="form-grop">
                                 {{ item_in_estimate.comment }}
                                 <input class="hidden" type="text" name='appointment' value='delete_items'>
-                                <input class="hidden" type="text" name='comment' value='{{ item_in_estimate.comment }}'>
+                                <input class="hidden" type="text" name='uuid_id' value='{{ item_in_estimate.uuid_id }}'>
                                 <button type="submit" class="close" data-dismiss="modal" aria-label="Close" title="Удалить">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
