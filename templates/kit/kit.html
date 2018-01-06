@@ -11,26 +11,26 @@
         </a>
       </div>
     </div>
-    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+    <div id="collapseOne" class="panel-collapse collapse {% if aria_expanded == 'add_power_items'%}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
         <form action="" method="post" class="text-center">{% csrf_token %}
             <input class="hidden" type="text" name='appointment' value='add_power_items'>
             <div class="form-group input-group">
                 <div class="input-group-addon">Привод</div>
-                {{ form.comment }}
+                {{ power_form.comment }}
             </div>
             <hr>
             <div class="form-group input-group">
-                {{ form.voltage }}
+                {{ power_form.voltage }}
                 <div class="input-group-addon">[В]</div>
             </div>
             <div class="form-group input-group">
-                {{ form.power }}
+                {{ power_form.power }}
                 <div class="input-group-addon">[кВт]</div>
             </div>
             <div class="form-group input-group">
                 <div class="input-group-addon">Тип</div>
-                {{ form.type }}
+                {{ power_form.type }}
             </div>
             <a role="button" data-toggle="collapse" href="#collapseAdding" aria-expanded="false" aria-controls="collapseAdding">
               Дополнительно
@@ -39,24 +39,24 @@
                 <hr>
                 <div class="form-group input-group">
                     <div class="input-group-addon">Интерфейс</div>
-                    {{ form.atributes }}
+                    {{ power_form.atributes }}
                 </div>
                 <div class="form-group input-group">
                     <div class="input-group-addon">Производитель</div>
-                    {{ form.manufacturer }}
+                    {{ power_form.manufacturer }}
                 </div>
                 <div class="form-group">
-                    {{ form.choise_reverse.label }} - {{ form.choise_reverse }}
-                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ form.choise_reverse.help_text }}" aria-hidden="true"></span>
+                    {{ power_form.choise_reverse.label }} - {{ power_form.choise_reverse }}
+                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ power_form.choise_reverse.help_text }}" aria-hidden="true"></span>
                 </div>
                 <div class="form-group">
-                    {{ form.choise_bypass.label }} - {{ form.choise_bypass }}
-                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ form.choise_bypass.help_text }}" aria-hidden="true"></span>
+                    {{ power_form.choise_bypass.label }} - {{ power_form.choise_bypass }}
+                    <span class="glyphicon glyphicon-question-sign white-spase-left" title="{{ power_form.choise_bypass.help_text }}" aria-hidden="true"></span>
                 </div>
                 <hr>
                 <div class="form-group input-group">
                     <div class="input-group-addon">Клеммы</div>
-                    {{ form.manufacturer_terminals }}
+                    {{ power_form.manufacturer_terminals }}
                 </div>
             </div>
             <hr>
@@ -75,9 +75,72 @@
         </a>
       </div>
     </div>
-    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+    <div id="collapseTwo" class="panel-collapse collapse {% if aria_expanded == 'add_control_items' %}in{% endif %}" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life
+        <form action="" method="post" class="text-center">{% csrf_token %}
+            <input class="hidden" type="text" name='appointment' value='add_control_items'>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Управление</div>
+                {{ control_form.comment }}
+            </div>
+            <hr>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Тип</div>
+                {{ control_form.type }}
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Производитель</div>
+                {{ control_form.manufacturer }}
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Серия</div>
+                {{ control_form.series }}
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Дискр. входы</div>
+                {{ control_form.discret_inputs }}
+            </div>
+            <div class="form-group input-group">
+                <div class="input-group-addon">Дискр. выходы</div>
+                {{ control_form.discret_outputs }}
+            </div>
+            <a role="button" data-toggle="collapse" href="#collapseAddingControl" aria-expanded="false" aria-controls="collapseAddingControl">
+              Дополнительно
+            </a>
+            <div class="collapse" id="collapseAddingControl">
+                <hr>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">4-20мА входы</div>
+                    {{ control_form.analog_inputs }}
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">4-20мА выходы</div>
+                    {{ control_form.analog_outputs }}
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Pt100 входы</div>
+                    {{ control_form.temperature_inputs }}
+                </div>
+                <hr>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Интерфейс</div>
+                    {{ control_form.atributes }}
+                </div>
+                <hr>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Реле</div>
+                    {{ control_form.manufacturer_relays }}
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-addon">Клеммы</div>
+                    {{ control_form.manufacturer_terminals }}
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-orange">Добавить в смету</button>
+            </div>
+        </form>
       </div>
     </div>
   </div>

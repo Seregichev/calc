@@ -16,6 +16,7 @@ class Parameter(models.Model):
     category = models.ForeignKey(CategoryParameter, blank=True, null=True, default=None, verbose_name="Категория")
     name = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name="Название")
     value = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Величина")
+    comment = models.TextField(blank=True, null=True, default=None, verbose_name="Комментарий")
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
     created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")
@@ -59,10 +60,16 @@ class ItemCategoryParameter(models.Model):
     nmb = models.IntegerField(default=1, verbose_name="Колличество", help_text="Укажите колличество изделий выбранной категории которые должны автоматически добавляться")
     do_more = models.BooleanField(default=False, verbose_name="На ступень выше?",
                                                  help_text="Отметьте галочкой, если необходимо подбирать изделие на ступень выше")
-    revers = models.BooleanField(default=False, verbose_name="Увеличивать при Реверсе?",
+    revers = models.BooleanField(default=False, verbose_name="+ при Реверсе?",
                                                  help_text="Отметьте галочкой, если необходимо увеличивать при реверсе")
-    bypass = models.BooleanField(default=False, verbose_name="Увеличивать при Bypass?",
+    bypass = models.BooleanField(default=False, verbose_name="+ при Bypass?",
                                                  help_text="Отметьте галочкой, если необходимо увеличивать при реверсе")
+    amount_fixed = models.BooleanField(default=False, verbose_name="Исп-ть кол-во?",
+                                 help_text="Отметьте галочкой, если нужно брать кол-во изделий из столбца 'Колличество'")
+    main_category = models.BooleanField(default=False, verbose_name="Основная категория?",
+                                       help_text="Отметьте галочкой, если это основная категория в этой подборке категорий изделий")
+    common_category = models.BooleanField(default=False, verbose_name="Общая категория?",
+                                     help_text="Отметьте галочкой, если это общая категория используемая в других параметрах")
     is_active = models.BooleanField(default=True, verbose_name="Активно?")
     created = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Создано")
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, verbose_name="Обновленно")
