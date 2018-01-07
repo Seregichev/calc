@@ -93,17 +93,19 @@ class AddControlForm(forms.Form):
     )
 
     manufacturer = forms.ModelChoiceField(queryset=Parameter.objects.filter(
-        category=CategoryParameter.objects.filter(name=u'Тип управления', is_active=True))\
+        category=CategoryParameter.objects.filter(name=u'Тип управления', is_active=True),
+        itemcategoryparameter__main_category=True)\
                                           .values_list('itemcategoryparameter__item_category__item__manufacturer__name',
                                            flat=True).distinct(), widget=forms.Select(attrs={'class': 'form-control'})
                                           )
 
     series = forms.ModelChoiceField(queryset=Parameter.objects.filter(
-        category=CategoryParameter.objects.filter(name=u'Тип управления', is_active=True)) \
-                                          .values_list('itemcategoryparameter__item_category__item__series',
+        category=CategoryParameter.objects.filter(name=u'Тип управления', is_active=True),
+        itemcategoryparameter__main_category=True)\
+                                        .values_list('itemcategoryparameter__item_category__item__series',
                                                        flat=True).distinct(),
-                                          widget=forms.Select(attrs={'class': 'form-control'})
-                                          )
+                                        widget=forms.Select(attrs={'class': 'form-control'})
+                                        )
 
     discret_inputs = forms.IntegerField(required=True,
                                         error_messages={'required': 'Пожалуйста выберите кол-во дискретных входов'},

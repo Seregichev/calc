@@ -4,13 +4,13 @@ from .models import ItemInEstimate
 from items.models import Item
 from parameters.models import Parameter
 from uuid import uuid4
-from django.db.models import Count
+from django.db.models import Sum, F
 
 
 # функция добавления изделия в смету или выдачи ошибки
 def created_item_in_estimate(session_key, uuid_id, item_id, is_active, calculate, nmb, comment):
-    created = ItemInEstimate.objects.create(session_key=session_key, uuid_id=uuid_id, item_id=item_id, is_active=is_active,
-                                        calculate=calculate, nmb=nmb, comment=comment)
+    created = ItemInEstimate.objects.create(session_key=session_key, uuid_id=uuid_id, item_id=item_id,
+                                            is_active=is_active, calculate=calculate, nmb=nmb, comment=comment)
     if created:
         return created
     else:
@@ -196,6 +196,7 @@ def add_power_items_in_estimate(session_key, data):
         msg_error += u'Пожалуйста измените запрос.'
     return locals()
 
+# функция добавления изделий управления в смету
 def add_control_items_in_estimate(session_key, data):
     # глобальная переменная для вывода ошибки
     global msg_error
@@ -240,6 +241,10 @@ def add_control_items_in_estimate(session_key, data):
     category_terminal_in_parameter = Parameter.objects.filter(name__startswith='Категория клемм',
                                                               is_active=True).values(
                                                                 'itemcategoryparameter__item_category').first()
+    # получаем категорию промежуточных реле из параметра категории промежуточных реле
+    category_relay_in_parameter = Parameter.objects.filter(name__startswith='Категория промежуточных реле',
+                                                              is_active=True).values(
+                                                                'itemcategoryparameter__item_category').first()
 
     # получаем напряжение из парметра выбранного типа упарвления -> величина
     voltage = Parameter.objects.get(id=type, is_active=True).value
@@ -262,18 +267,42 @@ def add_control_items_in_estimate(session_key, data):
         # если общая категория изделий в параметре
         elif category_item_in_parameter.get('itemcategoryparameter__common_category'):
 
-            # !!!!!! Добавить сюда фильрацию по производителю для клемм и реле
+            # если категория изделий равна категории клемм из параметра "категория клемм"
+            if category_terminal_in_parameter['itemcategoryparameter__item_category'] \
+                    == category_item_in_parameter['itemcategoryparameter__item_category']:
+                # если в request есть производитель клемм то
+                if manufacturer_terminals:
+                    # фильтруем с учетом производителя
+                    add_item = add_item.filter(manufacturer__name=manufacturer_terminals, voltage__gte=voltage)
+                # колличество равно сумме запрашиваемых выводов
+                nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs) + int(first_analog_inputs)
+                                  + int(first_analog_outputs) + int(first_temperature_inputs))
 
-            # фильтруем выдачу изделий по напряжению
-            add_item = add_item.filter(voltage__gte=voltage)
-            nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs) + int(first_analog_inputs) + int(first_analog_outputs))
+            # иначе если категория изделий равна категории реле из параметра "категория промежуточных реле"
+            elif category_relay_in_parameter['itemcategoryparameter__item_category'] \
+                    == category_item_in_parameter['itemcategoryparameter__item_category']:
+                # если в request есть производитель реле то
+                if manufacturer_relays:
+                    # фильтруем с учетом производителя
+                    add_item = add_item.filter(manufacturer__name=manufacturer_relays, voltage__gte=voltage)
+                # колличество равно сумме запрашиваемых дискретных выводов
+                nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs))
+
+            # во всех остальных случаях
+            else:
+                # фильтруем выдачу изделий по напряжению
+                add_item = add_item.filter(voltage__gte=voltage)
+                # колличество равно сумме запрашиваемых выводов
+                nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs) + int(first_analog_inputs)
+                                  + int(first_analog_outputs) + int(first_temperature_inputs))
 
         # в остальных случаях
         else:
             # фильтруем выдачу изделий по напряжению
             add_item = add_item.filter(manufacturer__name=manufacturer, series=series, voltage__gte=voltage)
             # сортируем выдачу в порядке возрастания
-            add_item = add_item.order_by('-discret_input','-discret_output','-analog_input','-analog_output','-temperature_input',)
+            add_item = add_item.order_by('-discret_input','-discret_output','-analog_input','-analog_output',
+                                         '-temperature_input',)
             # если нашлись изделия
             if add_item:
                 # если первое изделие из выборки содержит данный тип вывода то определяем кол-во выводов по потребности от запроса
@@ -289,7 +318,7 @@ def add_control_items_in_estimate(session_key, data):
                     nmb = round(int(temperature_inputs)/int(add_item[0].temperature_input) + .5)
 
         # если изделие из выборки есть и для него указано колличество
-        if add_item and nmb:
+        if add_item and nmb > 0:
             # добавляем изделие в смету
             created_item = created_item_in_estimate(session_key=session_key,
                                                     uuid_id=uuid_id,
@@ -298,14 +327,15 @@ def add_control_items_in_estimate(session_key, data):
                                                     calculate=None,
                                                     nmb=nmb,
                                                     comment=comment)
-            # находим добавляемое устройство
-            item = Item.objects.get(id=add_item[0].id)
-            # уменьшаем колличество необходимых выводов на кол-во добавленных выводов с изделием, добавленным в смету
-            discret_inputs = int(discret_inputs) - int(item.discret_input)
-            discret_outputs = int(discret_outputs) - int(item.discret_output)
-            analog_inputs = int(analog_inputs) - int(item.analog_input)
-            analog_outputs = int(analog_outputs) - int(item.analog_output)
-            temperature_inputs = int(temperature_inputs) - int(item.temperature_input)
+            if not category_item_in_parameter.get('itemcategoryparameter__common_category'):
+                # находим добавляемое устройство
+                item = Item.objects.get(id=add_item[0].id)
+                # уменьшаем колличество необходимых выводов на кол-во добавленных выводов с изделием, добавленным в смету
+                discret_inputs = int(discret_inputs) - (int(item.discret_input) * nmb)
+                discret_outputs = int(discret_outputs) - (int(item.discret_output) * nmb)
+                analog_inputs = int(analog_inputs) - (int(item.analog_input) * nmb)
+                analog_outputs = int(analog_outputs) - (int(item.analog_output) * nmb)
+                temperature_inputs = int(temperature_inputs) - (int(item.temperature_input) * nmb)
 
             # определяем глобальные переменные
             global last_required
@@ -382,11 +412,50 @@ def add_control_items_in_estimate(session_key, data):
                 last_required = None
                 last_required_nmb = None
 
-    # Добавить сюда проверку на присутствие всех запрашиваемых выводов в управлении, если нет то удалаем по uuid_id
-    #             и выводим сообщение об ошибки и колличестве выводов, которое не удалось подобрать
+    # Получаем общее колличество добавленных в смету выводов
+    check_items = ItemInEstimate.objects.filter(session_key=session_key, is_active=True, uuid_id=uuid_id)\
+        .exclude(item__category__itemcategoryparameter__common_category=True)
+    check_items_discret_inputs = check_items.aggregate(total_discret_inputs=Sum(F('item__discret_input')*F('nmb')))
+    check_items_discret_inputs = check_items_discret_inputs.get('total_discret_inputs')
+
+    check_items_discret_outputs = check_items.aggregate(total_discret_output=Sum(F('item__discret_output') * F('nmb')))
+    check_items_discret_outputs = check_items_discret_outputs.get('total_discret_output')
+
+    check_items_analog_inputs = check_items.aggregate(total_analog_inputs=Sum(F('item__analog_input') * F('nmb')))
+    check_items_analog_inputs = check_items_analog_inputs.get('total_analog_inputs')
+
+    check_items_analog_outputs = check_items.aggregate(total_analog_outputs=Sum(F('item__analog_output') * F('nmb')))
+    check_items_analog_outputs = check_items_analog_outputs.get('total_analog_outputs')
+
+    check_items_temperature_inputs = check_items.aggregate(total_temperature_inputs=Sum(F('item__temperature_input') * F('nmb')))
+    check_items_temperature_inputs = check_items_temperature_inputs.get('total_temperature_inputs')
+
+    # Проверяем не добавили ли мы каких либо запрашиваемых выводов
+    if int(first_discret_inputs) > int(check_items_discret_inputs) \
+            or int(first_discret_outputs) > int(check_items_discret_outputs)\
+            or int(first_analog_inputs) > int(check_items_analog_inputs) \
+            or int(first_analog_outputs) > int(check_items_analog_outputs)\
+            or int(first_temperature_inputs) > int(check_items_temperature_inputs):
+        # Если не смогли добавить то выводим сообщение об ошибке и удаляем
+        not_found_item = True
+        msg_error += u'Не возможно подобрать при таких условиях.' \
+                     u'Задано DI = %s, а подобрано %s. ' \
+                     u'Задано DQ = %s, а подобрано %s. ' \
+                     u'Задано AI = %s, а подобрано %s. ' \
+                     u'Задано AQ = %s, а подобрано %s. ' \
+                     u'Задано TI = %s, а подобрано %s. ' \
+                     % (str(first_discret_inputs), str(check_items_discret_inputs),
+                        str(first_discret_outputs), str(check_items_discret_outputs),
+                        str(first_analog_inputs), str(check_items_analog_inputs),
+                        str(first_analog_outputs), str(check_items_analog_outputs),
+                        str(first_temperature_inputs), str(check_items_temperature_inputs))
+    # если найден флаг ненайденных изделий, то
+    if not_found_item:
+        # удаляем из сметы по uuid
+        delete_uuid_id_in_estimate(session_key=session_key, uuid_id=uuid_id)
+        msg_error += u'Пожалуйста измените запрос.'
 
     return locals()
-
 
 # функция удаления изделий из сметы
 def delete_items(session_key, data):
