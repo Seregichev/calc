@@ -48,7 +48,11 @@ admin.site.register(ItemManufacturer, ItemManufacturerAdmin)
 
 class ItemAdmin (ImportExportModelAdmin): #Для импорта-экспорта используется скаченная библиотека django-import-export
 
-    list_display = [field.name for field in Item._meta.fields]
+    # list_display = [field.name for field in Item._meta.fields]
+    list_display = ('id', 'category', 'vendor_code', 'name', 'manufacturer', 'series', 'voltage', 'power', 'is_active',
+                    'price', 'currency', 'created', 'updated')
+    list_display_links = ('id', 'name', 'vendor_code')
+    list_editable = ('is_active', 'price', 'currency')
     inlines = [AddItemInline, ItemImageInline]
     list_filter = ['category', 'manufacturer', 'power']
     search_fields = ['vendor_code', 'power']

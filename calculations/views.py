@@ -270,10 +270,11 @@ def add_control_items_in_estimate(session_key, data):
             # если категория изделий равна категории клемм из параметра "категория клемм"
             if category_terminal_in_parameter['itemcategoryparameter__item_category'] \
                     == category_item_in_parameter['itemcategoryparameter__item_category']:
+                add_item = add_item.filter(voltage__gte=voltage)
                 # если в request есть производитель клемм то
                 if manufacturer_terminals:
                     # фильтруем с учетом производителя
-                    add_item = add_item.filter(manufacturer__name=manufacturer_terminals, voltage__gte=voltage)
+                    add_item = add_item.filter(manufacturer__name=manufacturer_terminals)
                 # колличество равно сумме запрашиваемых выводов
                 nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs) + int(first_analog_inputs)
                                   + int(first_analog_outputs) + int(first_temperature_inputs))
@@ -281,10 +282,12 @@ def add_control_items_in_estimate(session_key, data):
             # иначе если категория изделий равна категории реле из параметра "категория промежуточных реле"
             elif category_relay_in_parameter['itemcategoryparameter__item_category'] \
                     == category_item_in_parameter['itemcategoryparameter__item_category']:
+                add_item = add_item.filter(voltage__gte=voltage)
                 # если в request есть производитель реле то
                 if manufacturer_relays:
+                    print(voltage)
                     # фильтруем с учетом производителя
-                    add_item = add_item.filter(manufacturer__name=manufacturer_relays, voltage__gte=voltage)
+                    add_item = add_item.filter(manufacturer__name=manufacturer_relays)
                 # колличество равно сумме запрашиваемых дискретных выводов
                 nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs))
 
@@ -295,6 +298,10 @@ def add_control_items_in_estimate(session_key, data):
                 # колличество равно сумме запрашиваемых выводов
                 nmb = int(nmb) * (int(first_discret_inputs) + int(first_discret_outputs) + int(first_analog_inputs)
                                   + int(first_analog_outputs) + int(first_temperature_inputs))
+            if not add_item:
+                not_found_item = True
+                msg_error += u'Не найдены изделия с отметкой общяя категория в параметре. ' \
+                             u'Обратитесь в поддержку. '
 
         # в остальных случаях
         else:
@@ -343,6 +350,7 @@ def add_control_items_in_estimate(session_key, data):
             last_required = None
             last_required_nmb = None
 
+            print(created_item.item_id, created_item)
             # циклом обходим дополнительные изделия связанные с добавленным в смету изделием
             for adding_item in Item.objects.filter(id=created_item.item_id).values(
                     'main_item__adding_item',
@@ -360,7 +368,7 @@ def add_control_items_in_estimate(session_key, data):
                                                  item_id=adding_item.get('main_item__adding_item'),
                                                  is_active=True,
                                                  calculate=None,
-                                                 nmb=adding_item.get('main_item__nmb'),
+                                                 nmb=adding_item.get('main_item__nmb') * nmb,
                                                  comment=comment
                                                  )
 
@@ -380,7 +388,7 @@ def add_control_items_in_estimate(session_key, data):
                                                  item_id=last_required,
                                                  is_active=True,
                                                  calculate=None,
-                                                 nmb=last_required_nmb,
+                                                 nmb=last_required_nmb * nmb,
                                                  comment=comment
                                                  )
                         last_required = None
@@ -393,7 +401,7 @@ def add_control_items_in_estimate(session_key, data):
                                                  item_id=adding_item.get('main_item__adding_item'),
                                                  is_active=True,
                                                  calculate=None,
-                                                 nmb=adding_item.get('main_item__nmb'),
+                                                 nmb=adding_item.get('main_item__nmb') * nmb,
                                                  comment=comment
                                                  )
                         last_required = None
@@ -406,7 +414,7 @@ def add_control_items_in_estimate(session_key, data):
                                          item_id=last_required,
                                          is_active=True,
                                          calculate=None,
-                                         nmb=last_required_nmb,
+                                         nmb=last_required_nmb * nmb,
                                          comment=comment
                                          )
                 last_required = None
