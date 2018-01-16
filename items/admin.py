@@ -1,6 +1,8 @@
 from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 from .models import *
+from import_export import resources, fields
+from import_export.widgets import ForeignKeyWidget
 
 # класс выводит изображения изделия внизу карточки товара
 class ItemImageInline(admin.TabularInline):
@@ -46,6 +48,13 @@ class ItemManufacturerAdmin (admin.ModelAdmin):
 
 admin.site.register(ItemManufacturer, ItemManufacturerAdmin)
 
+class ItemAdminResource(resources.ModelResource):
+    category = fields.Field(column_name='category', attribute='category', widget=ForeignKeyWidget(ItemCategory, 'name'))
+    manufacturer = fields.Field(column_name='manufacturer', attribute='manufacturer', widget=ForeignKeyWidget(ItemManufacturer, 'name'))
+
+    class Meta:
+        model = Item
+
 class ItemAdmin (ImportExportModelAdmin): #Для импорта-экспорта используется скаченная библиотека django-import-export
 
     # list_display = [field.name for field in Item._meta.fields]
@@ -57,8 +66,7 @@ class ItemAdmin (ImportExportModelAdmin): #Для импорта-экспорт�
     list_filter = ['category', 'manufacturer', 'power']
     search_fields = ['vendor_code', 'power']
 
-    class Meta:
-        model = Item
+    resource_class = ItemAdminResource
 
 admin.site.register(Item, ItemAdmin)
 
