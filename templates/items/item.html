@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3" style="padding-top:40px;">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle button-category" type="button" id="dropdownMenu1" data-toggle="dropdown" data-category-id="" aria-haspopup="true" aria-expanded="true">
+                    Категория
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    {% for category in categories %}
+                        <li class="dropdown-li category-dropdown-li" data-name="{{ category.name }}"
+                        data-id="{{ category.id }}"><a href="#">{{ category.name }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+            </div>
+            <div class="col-lg-6 col-lg-offset-3" style="padding-top:40px;">
+                <div class="dropdown dropdown-power">
+                  <button class="btn btn-default dropdown-toggle button-power" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Мощность
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-power" aria-labelledby="dropdownMenu2">
+                    {% for power_item in powers_items %}
+                        <li class="dropdown-li power-dropdown-li" data-power="{{ power_item.power }}">
+                            <a href="#">{{ power_item.power }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+            </div>
+            <div class="col-lg-6 col-lg-offset-3" style="padding:40px 0 40px 0;">
+                <div class="items-list" action="{% url 'filter_category_items' %}">{% csrf_token %}
+                    <div>
+                        {% for item in items %}
+                            <p>{{ item.name }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

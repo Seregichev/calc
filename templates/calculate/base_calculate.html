@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="section1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h1 class="text-center">Смета</h1>
+
+                </div>
+                <div class="col-md-3">
+
+                    {% include 'kit/kit.html' %}
+
+                </div>
+                <div class="col-md-8 col-lg-offset-1">
+
+                    {% include 'estimate/estimate.html' %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
