@@ -34,7 +34,6 @@ class ItemManufacturer(models.Model):
         verbose_name = "Производитель изделия"
         verbose_name_plural = "Производители изделий"
 
-
 class Item(models.Model):
     category = models.ForeignKey(ItemCategory, blank=True, null=True, default=None, verbose_name="Категория",
                                  on_delete=models.DO_NOTHING)
